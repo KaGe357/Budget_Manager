@@ -16,18 +16,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $amount = $_POST['amount'];
     $date = $_POST['date'];
     $category_id = $_POST['category_id'];
+    $payment_method_id = $_POST['payment_method_id'];
     $comment = isset($_POST['comment']) ? $_POST['comment'] : null;
 
     $polaczenie = new mysqli($host, $db_user, $db_password, $db_name);
 
     if ($polaczenie->connect_errno != 0) {
         echo "<script>alert('Błąd połączenia: " . $polaczenie->connect_errno . "');</script>";
-        echo "<script>window.location.href = 'add-income.php';</script>";
+        echo "<script>window.location.href = 'add-expense.php';</script>";
         exit();
     } else {
-        $stmt = $polaczenie->prepare("INSERT INTO expenses (user_id, date_of_expense, amount, expense_category_assigned_to_user_id, expense_comment) VALUES (?, ?, ?, ?, ?)");
+
+        $stmt = $polaczenie->prepare("INSERT INTO expenses (user_id, date_of_expense, amount, expense_category_assigned_to_user_id, payment_method_assigned_to_user_id, expense_comment) VALUES (?, ?, ?, ?, ?, ?)");
         if ($stmt) {
-            $stmt->bind_param("isdis", $user_id, $date, $amount, $category_id, $comment);
+            $stmt->bind_param("isdiis", $user_id, $date, $amount, $category_id, $payment_method_id, $comment);
             if ($stmt->execute()) {
                 echo "<script>alert('Wydatek został dodany pomyślnie!');</script>";
                 echo "<script>window.location.href = 'add-expense.php';</script>";
